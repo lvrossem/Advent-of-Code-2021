@@ -23,27 +23,31 @@ def get_grid(lines):
     return [[0 for _ in range(width + 1)] for _ in range(height + 1)]
 
 
+def count_overlaps(grid):
+    return sum([len(list(filter(lambda x: (x > 1) , line)))  for line in grid])
+
+
+def apply_line(grid, line):
+    x_incr = 0 if line[1][0] == line[0][0] else round((line[1][0] - line[0][0]) / abs(line[1][0] - line[0][0]))
+    y_incr = 0 if line[1][1] == line[0][1] else round((line[1][1] - line[0][1]) / abs(line[1][1] - line[0][1]))
+
+    x, y = line[0][0], line[0][1]
+
+    while x != line[1][0] + x_incr or y != line[1][1] + y_incr:
+        grid[y][x] += 1
+        x += x_incr
+        y += y_incr
+
+
 def part1():
     lines = get_input()
     grid = get_grid(lines)
 
     for line in lines:
         if line[0][0] == line[1][0] or line[0][1] == line[1][1]:
-            min_y = min(line[0][1], line[1][1])
-            max_y = max(line[0][1], line[1][1])
+            apply_line(grid, line)
 
-            min_x = min(line[0][0], line[1][0])
-            max_x = max(line[0][0], line[1][0])
-            for y in range(min_y, max_y + 1):
-                for x in range(min_x, max_x + 1):
-                    grid[y][x] += 1
-
-    result = 0
-
-    for line in grid:
-        for number in line:
-            if number > 1:
-                result += 1
+    result = count_overlaps(grid)
 
     print(f'Solution for part 1 is {result}')
 
@@ -53,28 +57,9 @@ def part2():
     grid = get_grid(lines)
 
     for line in lines:
-        x_incr = 1 if line[1][0] > line[0][0] else -1
-        y_incr = 1 if line[1][1] > line[0][1] else -1
+        apply_line(grid, line)
 
-        if line[1][0] == line[0][0]:
-            x_incr = 0
-
-        if line[1][1] == line[0][1]:
-            y_incr = 0
-
-        x, y = line[0][0], line[0][1]
-
-        while x != line[1][0] + x_incr or y != line[1][1] + y_incr:
-            grid[y][x] += 1
-            x += x_incr
-            y += y_incr
-
-    result = 0
-
-    for line in grid:
-        for number in line:
-            if number > 1:
-                result += 1
+    result = count_overlaps(grid)
 
     print(f'Solution for part 2 is {result}')
 
