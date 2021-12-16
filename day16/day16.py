@@ -22,9 +22,9 @@ class packet:
                 result *= subpacket.evaluate()
             return result
         elif self.type == 2:
-            return min(self.subpackets, key=lambda packet: packet.evaluate()).evaluate()
+            return min([packet.evaluate() for packet in self.subpackets])
         elif self.type == 3:
-            return max(self.subpackets, key=lambda packet: packet.evaluate()).evaluate()
+            return max([packet.evaluate() for packet in self.subpackets])
         elif self.type == 5:
             return int(self.subpackets[0].evaluate() > self.subpackets[1].evaluate())
         elif self.type == 6:
